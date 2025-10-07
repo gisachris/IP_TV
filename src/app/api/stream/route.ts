@@ -32,7 +32,7 @@ async function validateSource(): Promise<boolean> {
     clearTimeout(timeoutId);
     return response.ok;
   } catch (error) {
-    console.log('Source validation skipped:', error.message);
+    console.log('Source validation skipped:', error instanceof Error ? error.message : 'Unknown error');
     return true; // Skip validation if fetch fails
   }
 }
