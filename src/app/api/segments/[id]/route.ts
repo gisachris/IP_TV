@@ -8,9 +8,10 @@ const RETRY_DELAY = 100; // ms
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const segmentId = params.id;
+  const { id } = await params;
+  const segmentId = id;
   const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
   
   // Validate segment ID
