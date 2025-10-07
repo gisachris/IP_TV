@@ -11,12 +11,20 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const segmentId = id;
+  let segmentId = id;
   const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
+  
+  // Extract number from segment filename if full filename is provided
+  if (segmentId.includes('segment_') && segmentId.endsWith('.ts')) {
+    const match = segmentId.match(/segment_(\d{3})\.ts/);
+    if (match) {
+      segmentId = match[1];
+    }
+  }
   
   // Validate segment ID
   if (!/^\d{3}$/.test(segmentId)) {
-    console.warn(`Invalid segment ID: ${segmentId} from ${clientIP}`);
+    console.warn(`Invalid segment ID: ${id} from ${clientIP}`);
     return new NextResponse('Invalid segment ID', { status: 400 });
   }
 
