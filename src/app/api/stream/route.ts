@@ -48,7 +48,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     await fs.mkdir(hlsDir, { recursive: true });
   } catch (error) {
-    console.error('Failed to create HLS directory:', error);
+    console.error('Failed to create HLS directory:', error instanceof Error ? error.message : 'Unknown error');
     return new NextResponse('Server configuration error', { status: 500 });
   }
 
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
   });
 
-  activeProcess.on('error', (error) => {
+  activeProcess.on('error', (error: NodeJS.ErrnoException) => {
     console.error('FFmpeg process error:', error);
     if (error.code === 'ENOENT') {
       console.error('FFmpeg not found. Please check FFMPEG_PATH environment variable.');
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     activeProcess = null;
   });
 
-  activeProcess.on('exit', (code) => {
+  activeProcess.on('exit', (code: number | null) => {
     console.log(`FFmpeg exited with code ${code}`);
     activeProcess = null;
   });
@@ -145,7 +145,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           }));
         }
       } catch (error) {
-        // Still waiting
+        // Still waiting - playlist not ready yet
+        console.debug('Playlist not ready:', error instanceof Error ? error.message : 'Unknown error');
       }
     }, 500);
 
