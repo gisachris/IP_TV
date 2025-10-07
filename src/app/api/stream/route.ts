@@ -37,7 +37,7 @@ async function validateSource(): Promise<boolean> {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const startTime = Date.now();
   const clientIP = request.headers.get('x-forwarded-for') || 'unknown';
   
@@ -126,7 +126,7 @@ export async function GET(request: NextRequest) {
   });
 
   // Wait for playlist with timeout
-  return new Promise((resolve) => {
+  return new Promise<NextResponse>((resolve) => {
     const checkPlaylist = setInterval(async () => {
       try {
         const playlist = await fs.readFile(playlistPath, 'utf-8');
