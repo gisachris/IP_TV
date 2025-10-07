@@ -2,10 +2,8 @@ import type { NextConfig } from "next";
 import path from 'path';
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
   poweredByHeader: false,
   compress: true,
-  outputFileTracingRoot: path.join(__dirname, '../../'),
 
   async headers() {
     return [

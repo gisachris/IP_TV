@@ -6,3 +6,6 @@ cmds = ['npm ci --include=dev', 'npm run build']
 
 [phases.start]
 cmd = 'npm start'
+
+[variables]
+PORT = '3002'
