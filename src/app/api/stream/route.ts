@@ -6,7 +6,7 @@ import path from 'path';
 const FFMPEG_PATH = process.env.FFMPEG_PATH || (process.platform === 'win32' ? 'C:\\Users\\Gdev\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0-full_build\\bin\\ffmpeg.exe' : 'ffmpeg');
 const IPTV_SOURCE = process.env.IPTV_SOURCE_URL || 'http://41.216.123.106:5000/Iptv_1';
 const MAX_RETRIES = 3;
-const TIMEOUT_MS = 15000;
+const TIMEOUT_MS = 30000;
 
 // Global process tracking
 let activeProcess: ChildProcess | null = null;
@@ -83,22 +83,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   // Cleanup any existing process
   await cleanupOldProcess();
 
-  // Start FFmpeg transcoding with live streaming settings
+  // Start FFmpeg transcoding with error recovery
   activeProcess = spawn(FFMPEG_PATH, [
-    '-re',
+    '-fflags', '+genpts',
+    '-err_detect', 'ignore_err',
     '-i', IPTV_SOURCE,
     '-c:v', 'libx264',
     '-preset', 'ultrafast',
     '-tune', 'zerolatency',
+    '-g', '30',
+    '-sc_threshold', '0',
     '-c:a', 'aac',
     '-b:a', '128k',
+    '-ar', '44100',
     '-f', 'hls',
-    '-hls_time', '4',
+    '-hls_time', '6',
     '-hls_list_size', '3',
     '-hls_flags', 'delete_segments+append_list+omit_endlist',
     '-hls_segment_filename', path.join(hlsDir, 'segment_%03d.ts'),
     '-hls_base_url', '/hls/',
     '-hls_allow_cache', '0',
+    '-avoid_negative_ts', 'make_zero',
     '-y',
     playlistPath
   ]);
@@ -146,7 +151,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         }
       } catch (error) {
         // Still waiting - playlist not ready yet
-        console.debug('Playlist not ready:', error instanceof Error ? error.message : 'Unknown error');
       }
     }, 500);
 

@@ -14,6 +14,9 @@ RUN npm ci --only=production
 # Copy source code
 COPY . .
 
+# Create HLS directory with proper permissions
+RUN mkdir -p public/hls && chmod 755 public/hls
+
 # Build the application
 RUN npm run build
 
