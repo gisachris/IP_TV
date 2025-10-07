@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import VideoPlayer from '@/components/VideoPlayer';
+import VideoPlayer from '../components/VideoPlayer';
 
 export default function Home() {
   const [stats, setStats] = useState({
