@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  iptv-player:
+    build: .
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - IPTV_SOURCE_URL=${IPTV_SOURCE_URL}
+      - FFMPEG_PATH=/usr/bin/ffmpeg
+      - NEXT_TELEMETRY_DISABLED=1
+    volumes:
+      - hls_data:/app/public/hls
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  hls_data:
