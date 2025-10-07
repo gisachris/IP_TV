@@ -30,7 +30,7 @@ export async function GET(
       
       console.log(`Serving segment ${segmentId} to ${clientIP} (attempt ${attempt})`);
       
-      return new NextResponse(segment, {
+      return new NextResponse(new Uint8Array(segment), {
         headers: {
           'Content-Type': 'video/mp2t',
           'Access-Control-Allow-Origin': '*',
