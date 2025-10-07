@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "src/app/api/stream/route.ts": {
+      "maxDuration": 10
+    },
+    "src/app/api/segments/[id]/route.ts": {
+      "maxDuration": 5
+    }
+  },
+  "env": {
+    "IPTV_SOURCE_URL": "@iptv_source_url",
+    "NODE_ENV": "production",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  }
+}

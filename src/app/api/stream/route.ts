@@ -3,7 +3,7 @@ import { spawn, ChildProcess } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const FFMPEG_PATH = process.env.FFMPEG_PATH || 'C:\\Users\\Gdev\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0-full_build\\bin\\ffmpeg.exe';
+const FFMPEG_PATH = process.env.FFMPEG_PATH || (process.platform === 'win32' ? 'C:\\Users\\Gdev\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.0-full_build\\bin\\ffmpeg.exe' : 'ffmpeg');
 const IPTV_SOURCE = process.env.IPTV_SOURCE_URL || 'http://41.216.123.106:5000/Iptv_1';
 const MAX_RETRIES = 3;
 const TIMEOUT_MS = 15000;
